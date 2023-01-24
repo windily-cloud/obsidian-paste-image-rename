@@ -264,7 +264,7 @@ export default class PasteImageRenamePlugin extends Plugin {
 		const fileCache = this.app.metadataCache.getFileCache(activeFile)
 		if (fileCache) {
 			debugLog('frontmatter', fileCache.frontmatter)
-			imageNameKey = fileCache.frontmatter?.imageNameKey || this.settings.imageNameKey
+			imageNameKey = fileCache.frontmatter[this.settings.imageNameKey] || ''
 		} else {
 			console.warn('could not get file cache from active file', activeFile.name)
 		}

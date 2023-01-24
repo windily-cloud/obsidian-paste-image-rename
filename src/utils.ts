@@ -1,6 +1,6 @@
 import { App, Vault } from 'obsidian';
 
-export const DEBUG = !(process.env.BUILD_ENV === 'production')
+export const DEBUG = (process.env.BUILD_ENV === 'production')
 
 export function debugLog(...args: any[]) {
 	if (DEBUG) {
