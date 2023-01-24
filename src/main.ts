@@ -23,6 +23,7 @@ import {
 interface PluginSettings {
 	// {{imageNameKey}}-{{DATE:YYYYMMDD}}
 	imageNamePattern: string
+    imageNameKey: string
 	dupNumberAtStart: boolean
 	dupNumberDelimiter: string
 	autoRename: boolean
@@ -33,6 +34,7 @@ interface PluginSettings {
 
 const DEFAULT_SETTINGS: PluginSettings = {
 	imageNamePattern: '{{fileName}}',
+    imageNameKey: 'uid',
 	dupNumberAtStart: false,
 	dupNumberDelimiter: '-',
 	autoRename: false,
@@ -262,7 +264,7 @@ export default class PasteImageRenamePlugin extends Plugin {
 		const fileCache = this.app.metadataCache.getFileCache(activeFile)
 		if (fileCache) {
 			debugLog('frontmatter', fileCache.frontmatter)
-			imageNameKey = fileCache.frontmatter?.imageNameKey || ''
+			imageNameKey = fileCache.frontmatter?.imageNameKey || this.settings.imageNameKey
 		} else {
 			console.warn('could not get file cache from active file', activeFile.name)
 		}
@@ -570,6 +572,18 @@ class SettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				}
 			));
+
+        new Setting(containerEl)
+                .setName('Image name key')
+                .setDesc("Image name key from yaml")
+                .addText(text => {
+                    text.setPlaceholder('uid')
+                        .setValue(this.plugin.settings.imageNameKey)
+                        .onChange(async (value: string) => {
+                            this.plugin.settings.imageNameKey = value
+                            await this.plugin.saveSettings();
+                        })
+                })
 
 		new Setting(containerEl)
 			.setName('Duplicate number at start (or end)')
